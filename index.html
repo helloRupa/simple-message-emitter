@@ -25,21 +25,19 @@
       const form = document.querySelector('form');
       const messages = document.querySelector('#messages');
 
-      function createMessage(msg, prepend = false) {
+      function createMessage(msg) {
         const li = document.createElement('li');
-        li.textContent = msg;
+        li.textContent = msg.msg;
+        messages.append(li);
+      }
 
-        prepend ? messages.prepend(li) : messages.append(li);
+      function createMessages(msgs) {
+        msgs.forEach(createMessage);
       }
 
       fetch("http://localhost:3000/messages")
       .then(res => res.json())
-      .then(msgs => {
-        console.log(msgs);
-        msgs.forEach((obj) => {
-          createMessage(obj.msg);
-        });
-      });
+      .then(createMessages);
 
       form.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -49,10 +47,9 @@
         e.target.reset();
       });
 
-      socket.on('chat message', function (msg) {
-        createMessage(msg, true);
-        const li = messages.querySelector('li:last-of-type')
-        messages.removeChild(li);
+      socket.on('chat message', function (msgs) {
+        messages.innerHTML = "";
+        createMessages(msgs);
       });
     </script>
   </body>

@@ -7,6 +7,7 @@ const pool = new Pool({
   port: 5432,
 });
 
+/* REGULAR DB STUFF NOT BEING USED */
 const getMessages = (request, response) => {
   pool.query('SELECT * FROM messages ORDER BY id DESC LIMIT 10', (error, results) => {
     if (error) {
@@ -27,18 +28,6 @@ const createMessage = (request, response) => {
   });
 };
 
-const createSocketMessage = (message) => {
-  return new Promise(resolve => {
-    pool.query('INSERT INTO messages (msg) VALUES ($1) RETURNING msg', [message], (error, results) => {
-      if (error) {
-        throw error;
-      }
-  
-      resolve(results.rows);
-    });
-  });
-};
-
 const deleteMessage = (request, response) => {
   const id = parseInt(request.params.id);
 
@@ -51,9 +40,35 @@ const deleteMessage = (request, response) => {
   });
 };
 
+/* SOCKET DB STUFF, IS BEING USED */
+const getSocketMessages = () => {
+  return new Promise(resolve => {
+    pool.query('SELECT * FROM messages ORDER BY id DESC LIMIT 10', (error, results) => {
+      if (error) {
+        throw error;
+      }
+      
+      resolve(results.rows);
+    })
+  });
+};
+
+const createSocketMessage = (message) => {
+  return new Promise(resolve => {
+    pool.query('INSERT INTO messages (msg) VALUES ($1) RETURNING msg', [message], (error, results) => {
+      if (error) {
+        throw error;
+      }
+  
+      resolve(results.rows);
+    });
+  });
+};
+
 module.exports = {
   getMessages,
   createMessage,
   deleteMessage,
+  getSocketMessages,
   createSocketMessage
 };
