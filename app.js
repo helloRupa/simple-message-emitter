@@ -21,9 +21,10 @@ app.use(
   })
 );
 
-app.get('/', (request, response) => {
-  response.sendFile(__dirname + '/index.html');
-});
+// UNCOMMENT TO SERVE HTML FROM SAME PORT AS SERVER
+// app.get('/', (request, response) => {
+//   response.sendFile(__dirname + '/index.html');
+// });
 
 app.get('/messages', db.getMessages);
 
