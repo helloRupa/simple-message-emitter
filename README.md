@@ -10,7 +10,9 @@ First:
   * one column called messages
 * in queries.js, update the pool data w/ your postgres db data
 
-Run project: `node index.js`
+Run project: `node app.js`
+
+You can also serve the index.html file from a different port using `httpserver` (npm package)
 
 Navigate to: `http://localhost:8000/`
 
