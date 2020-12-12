@@ -7,7 +7,7 @@ const pool = new Pool({
   port: 5432,
 });
 
-/* REGULAR DB STUFF NOT BEING USED */
+/* REGULAR DB STUFF, BEING USED, GETS MOST RECENT 10 MSGS, ORDER RECENT TO OLD */
 const getMessages = (request, response) => {
   pool.query('SELECT * FROM messages ORDER BY id DESC LIMIT 10', (error, results) => {
     if (error) {
@@ -17,6 +17,7 @@ const getMessages = (request, response) => {
   })
 };
 
+/* REGULAR DB STUFF NOT BEING USED */
 const createMessage = (request, response) => {
   const { msg } = request.body;
 
@@ -43,6 +44,7 @@ const deleteMessage = (request, response) => {
 /* SOCKET DB STUFF, IS BEING USED */
 const getSocketMessages = () => {
   return new Promise(resolve => {
+    // could pull out into own function
     pool.query('SELECT * FROM messages ORDER BY id DESC LIMIT 10', (error, results) => {
       if (error) {
         throw error;

@@ -5,16 +5,11 @@ const app = express();
 const port = 3000;
 const socketPort = 8000;
 const db = require('./queries');
-const { emit } = require('process');
-
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
-// ERROR HANDLING FOR DISCONNECTIONS??
 app.use(cors());
-
 app.use(bodyParser.json());
-
 app.use(
   bodyParser.urlencoded({
     extended: true,
@@ -27,20 +22,22 @@ app.get('/', (request, response) => {
 
 app.get('/messages', db.getMessages);
 
-app.post('/messages', db.createMessage);
+// app.post('/messages', db.createMessage);
 
-app.delete('/messages/:id', db.deleteMessage);
+// app.delete('/messages/:id', db.deleteMessage);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)
 });
 
+// sends out the 10 most recent messages from recent to old
 const emitMostRecentMessges = () => {
   db.getSocketMessages()
   .then(result => io.emit('chat message', result))
   .catch(console.log);
 };
 
+// connects, creates message, and emits top 10 messages
 io.on('connection', (socket) => {
   console.log('a user connected');
   
@@ -58,5 +55,5 @@ io.on('connection', (socket) => {
 });
 
 server.listen(socketPort, () => {
-  console.log('listening on *:8000');
+  console.log(`listening on *:${socketPort}`);
 });
