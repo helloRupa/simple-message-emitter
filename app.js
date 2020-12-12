@@ -6,7 +6,12 @@ const port = 3000;
 const socketPort = 8000;
 const db = require('./queries');
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "http://localhost:8080",
+    methods: ["GET", "POST"]
+  }
+});
 
 app.use(cors());
 app.use(bodyParser.json());
