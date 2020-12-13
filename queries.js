@@ -21,7 +21,7 @@ const getMessages = (request, response) => {
 const createSocketMessage = (message) => {
   return new Promise(resolve => {
     pool.query(
-      'INSERT INTO messages (msg, username) VALUES ($1, $2) RETURNING msg, username, created_at', 
+      'INSERT INTO messages (msg, username) VALUES ($1, $2) RETURNING msg, username, created_at, id', 
       [message.msg, message.username], 
       (error, results) => {
       if (error) {

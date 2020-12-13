@@ -27,11 +27,19 @@ app.use(
 app.get('/messages', db.getMessages);
 
 // sends out the 10 most recent messages from recent to old
-const emitMostRecentMessges = () => {
-  db.getSocketMessages()
-  .then(result => io.emit('chat message', result))
-  .catch(console.log);
-};
+// const emitMostRecentMessges = () => {
+//   db.getSocketMessages()
+//   .then(result => io.emit('chat message', result))
+//   .catch(console.log);
+// };
+
+let recentTenMessages; 
+
+db.getSocketMessages()
+.then(res => {
+  recentTenMessages = res;
+})
+.catch(console.log);
 
 // connects, creates message, and emits top 10 messages
 io.on('connection', (socket) => {
@@ -39,8 +47,10 @@ io.on('connection', (socket) => {
   
   socket.on('chat message', (msg) => {
     db.createSocketMessage(JSON.parse(msg))
-    .then(_ => {
-      emitMostRecentMessges();
+    .then(msg => {
+      recentTenMessages.pop();
+      recentTenMessages.unshift(msg[0]);
+      io.emit('chat message', recentTenMessages);
     })
     .catch(err => io.emit(err));
   });
