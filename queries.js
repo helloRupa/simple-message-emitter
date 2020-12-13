@@ -9,7 +9,9 @@ const pool = new Pool({
 
 /* REGULAR DB STUFF, BEING USED, GETS MOST RECENT 10 MSGS, ORDER RECENT TO OLD */
 const getMessages = (request, response) => {
-  pool.query('SELECT * FROM messages ORDER BY id DESC LIMIT 20', (error, results) => {
+  pool.query(
+    'SELECT * FROM messages ORDER BY id DESC LIMIT 20', 
+    (error, results) => {
     if (error) {
       throw error;
     }
