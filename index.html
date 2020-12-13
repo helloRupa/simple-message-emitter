@@ -16,7 +16,9 @@
   <body>
     <ul id="messages"></ul>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input id="u" placeholder="username" />
+      <input id="m" autocomplete="off" />
+      <button>Send</button>
     </form>
 
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
@@ -27,7 +29,7 @@
 
       function createMessage(msg) {
         const li = document.createElement('li');
-        li.textContent = msg.msg;
+        li.textContent = `${msg.msg} by ${msg.username} at ${msg.created_at}`;
         messages.append(li);
       }
 
@@ -42,9 +44,12 @@
       form.addEventListener("submit", (e) => {
         e.preventDefault();
 
-        socket.emit('chat message', document.querySelector('#m').value);
+        socket.emit('chat message', JSON.stringify({
+          msg: document.querySelector('#m').value,
+          username: document.querySelector('#u').value
+        }));
 
-        e.target.reset();
+        document.querySelector('#m').value = "";
       });
 
       socket.on('chat message', function (msgs) {

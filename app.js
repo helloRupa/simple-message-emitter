@@ -21,19 +21,10 @@ app.use(
   })
 );
 
-// UNCOMMENT TO SERVE HTML FROM SAME PORT AS SERVER
-// app.get('/', (request, response) => {
-//   response.sendFile(__dirname + '/index.html');
-// });
-
 app.get('/messages', db.getMessages);
 
-// app.post('/messages', db.createMessage);
-
-// app.delete('/messages/:id', db.deleteMessage);
-
 app.listen(port, () => {
-  console.log(`App running on port ${port}.`)
+  console.log(`App running on port ${port}.`);
 });
 
 // sends out the 10 most recent messages from recent to old
@@ -48,7 +39,7 @@ io.on('connection', (socket) => {
   console.log('a user connected');
   
   socket.on('chat message', (msg) => {
-    db.createSocketMessage(msg)
+    db.createSocketMessage(JSON.parse(msg))
     .then(_ => {
       emitMostRecentMessges();
     })
