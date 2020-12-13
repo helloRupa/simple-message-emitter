@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const server = require('http').createServer(app);
-// const port = 3000;
 const socketPort = 8000;
 const db = require('./queries');
 const io = require('socket.io')(server, {
@@ -13,11 +12,9 @@ const io = require('socket.io')(server, {
   }
 });
 
-
-
-
-
-// server.listen(3000);
+server.listen(socketPort, () => {
+  console.log(`listening on *:${socketPort}`);
+});
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -28,14 +25,6 @@ app.use(
 );
 
 app.get('/messages', db.getMessages);
-
-// app.listen(port, () => {
-//   console.log(`App running on port ${port}.`);
-// });
-
-server.listen(socketPort, () => {
-  console.log(`listening on *:${socketPort}`);
-});
 
 // sends out the 10 most recent messages from recent to old
 const emitMostRecentMessges = () => {
@@ -60,5 +49,3 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
 });
-
-
