@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const server = require('http').createServer(app);
 const socketPort = process.env.PORT || 8000;
@@ -14,6 +15,7 @@ server.listen(socketPort, () => {
   console.log(`listening on *:${socketPort}`);
 });
 
+app.use(cors());
 app.get('/messages', db.getMessages);
 
 let recentMessages; 
