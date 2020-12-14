@@ -6,7 +6,7 @@ const socketPort = process.env.PORT || 8000;
 const db = require("./controller");
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:8080",
+    origin: "https://chattermeow.netlify.app",
     methods: ["GET", "POST"],
   },
 });
