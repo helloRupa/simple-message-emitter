@@ -1,14 +1,14 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 const app = express();
-const server = require('http').createServer(app);
+const server = require("http").createServer(app);
 const socketPort = process.env.PORT || 8000;
-const db = require('./controller');
-const io = require('socket.io')(server, {
+const db = require("./controller");
+const io = require("socket.io")(server, {
   cors: {
     origin: "http://localhost:8080",
-    methods: ["GET", "POST"]
-  }
+    methods: ["GET", "POST"],
+  },
 });
 
 server.listen(socketPort, () => {
@@ -16,31 +16,32 @@ server.listen(socketPort, () => {
 });
 
 app.use(cors());
-app.get('/messages', db.getMessages);
+app.get("/messages", db.getMessages);
 
-let recentMessages; 
+let recentMessages;
 
 db.getSocketMessages()
-.then(res => {
-  recentMessages = res;
-})
-.catch(console.log);
+  .then((res) => {
+    recentMessages = res;
+  })
+  .catch(console.log);
 
 // connects, creates message, and emits top 10 messages
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  
-  socket.on('chat message', (msg) => {
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  socket.on("chat message", (msg) => {
     db.createSocketMessage(JSON.parse(msg))
-    .then(msg => {
-      recentMessages.pop();
-      recentMessages.unshift(msg);
-      io.emit('chat message', recentMessages);
-    })
-    .catch(err => io.emit(err));
+      .then((msg) => {
+        recentMessages.pop();
+        recentMessages.unshift(msg);
+        console.log(recentMessages);
+        io.emit("chat message", recentMessages);
+      })
+      .catch((err) => io.emit(err));
   });
 
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
   });
 });
