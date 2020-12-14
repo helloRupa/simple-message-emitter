@@ -1,9 +1,11 @@
 const db = require('./models/index');
 const Message = db['Message'];
 
+const attributes = ['username', 'msg', 'created_at', 'id'];
+
 async function geteRecentMessages() {
   return await Message.findAll({
-    attributes: ['username', 'msg', 'created_at', 'id'],
+    attributes,
     order: [['id', 'DESC']],
     limit: 20,
     raw: true
@@ -24,7 +26,7 @@ const createSocketMessage = (msg) => {
   return new Promise((resolve, reject) => {
     try {
       resolve(Message.create(msg, {
-        returning: ['username', 'msg', 'created_at', 'id']
+        returning: attributes
       }));
     } catch (error) {
       console.log(error);
