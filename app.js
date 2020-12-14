@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 const server = require('http').createServer(app);
 const socketPort = 8000;
-const db = require('./queries');
+const db = require('./controller');
 const io = require('socket.io')(server, {
   cors: {
     origin: "http://localhost:8080",
@@ -16,7 +16,6 @@ server.listen(socketPort, () => {
 });
 
 app.use(cors());
-
 app.get('/messages', db.getMessages);
 
 let recentMessages; 
@@ -35,7 +34,7 @@ io.on('connection', (socket) => {
     db.createSocketMessage(JSON.parse(msg))
     .then(msg => {
       recentMessages.pop();
-      recentMessages.unshift(msg[0]);
+      recentMessages.unshift(msg);
       io.emit('chat message', recentMessages);
     })
     .catch(err => io.emit(err));

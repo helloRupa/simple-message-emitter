@@ -1,14 +1,15 @@
 # Quick Express Socket.io PostgresSQL Test
 
-Endpoint for fetch requests: `http://localhost:3000/messages`
+Endpoint for socket comms: `http://localhost:8000`
 
-Supports GET all, DELETE, POST
+Endpoint for fetch requests: `http://localhost:8000/messages`
+
+Supports GET for HTTP requests, GET and POST on socket
 
 First: 
 * `npm install`
-* set up a postgres database called api with:
-  * one column called messages
-* in queries.js, update the pool data w/ your postgres db data
+* Update `config.json` with appropriate DB details
+* Run the migrations and seed: `npx sequelize-cli db:migrate` then `npx sequelize-cli db:seed:all`
 
 Run project: `node app.js`
 
