@@ -1,14 +1,14 @@
-const db = require('./models/index');
-const Message = db['Message'];
+const db = require("./models/index");
+const Message = db["Message"];
 
-const attributes = ['username', 'msg', 'created_at', 'id'];
+const attributes = ["username", "msg", "created_at", "id"];
 
 async function geteRecentMessages() {
   return await Message.findAll({
     attributes,
-    order: [['id', 'DESC']],
+    order: [["id", "DESC"]],
     limit: 20,
-    raw: true
+    raw: true,
   });
 }
 
@@ -18,24 +18,28 @@ const getMessages = async (req, res) => {
 
     return res.status(200).json(messages);
   } catch (error) {
-    return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message });
   }
 };
 
 const createSocketMessage = (msg) => {
   return new Promise((resolve, reject) => {
     try {
-      resolve(Message.create(msg, {
-        returning: attributes
-      }));
+      resolve(
+        Message.create(msg, {
+          returning: attributes,
+        })
+      );
     } catch (error) {
       console.log(error);
-      reject([{ 
-        username: "chatterMeow", 
-        message: error
-      }]);
+      reject([
+        {
+          username: "chatterMeow",
+          message: error,
+        },
+      ]);
     }
-  }).then(res => res.dataValues);
+  }).then((res) => res.dataValues);
 };
 
 const getSocketMessages = () => {
@@ -44,10 +48,12 @@ const getSocketMessages = () => {
       resolve(geteRecentMessages());
     } catch (error) {
       console.log(error);
-      reject([{ 
-        username: "chatterMeow", 
-        message: error
-      }]);
+      reject([
+        {
+          username: "chatterMeow",
+          message: error,
+        },
+      ]);
     }
   });
 };
@@ -55,5 +61,5 @@ const getSocketMessages = () => {
 module.exports = {
   getMessages,
   createSocketMessage,
-  getSocketMessages
+  getSocketMessages,
 };
