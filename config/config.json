@@ -1,8 +1,5 @@
 {
   "development": {
-    "username": "me",
-    "password": "password",
-    "database": "api",
     "host": "localhost",
     "dialect": "postgres"
   },
