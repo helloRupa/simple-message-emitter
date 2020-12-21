@@ -1,4 +1,5 @@
 const db = require("./models/index");
+const constants = require("./constants");
 const Message = db["Message"];
 
 const attributes = ["username", "msg", "created_at", "id"];
@@ -7,7 +8,7 @@ async function geteRecentMessages() {
   return await Message.findAll({
     attributes,
     order: [["id", "DESC"]],
-    limit: 20,
+    limit: constants.MESSAGE_LIMIT,
     raw: true,
   });
 }

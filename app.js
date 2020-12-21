@@ -4,6 +4,7 @@ const app = express();
 const server = require("http").createServer(app);
 const socketPort = process.env.PORT;
 const db = require("./controller");
+const constants = require("./constants");
 const io = require("socket.io")(server, {
   cors: {
     origin: process.env.ALLOWED_ORIGIN,
@@ -33,7 +34,7 @@ io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
     db.createSocketMessage(JSON.parse(msg))
       .then((msg) => {
-        if (recentMessages.length >= 20) {
+        if (recentMessages.length >= constants.MESSAGE_LIMIT) {
           recentMessages.pop();
         }
 
