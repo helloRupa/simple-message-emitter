@@ -1,17 +1,16 @@
 const db = require("./models/index");
 const constants = require("./constants");
 const Message = db["Message"];
-
 const attributes = ["username", "msg", "created_at", "id"];
 
-async function geteRecentMessages() {
+const geteRecentMessages = async () => {
   return await Message.findAll({
     attributes,
     order: [["id", "DESC"]],
     limit: constants.MESSAGE_LIMIT,
     raw: true,
   });
-}
+};
 
 const getMessages = async (req, res) => {
   try {
@@ -23,40 +22,36 @@ const getMessages = async (req, res) => {
   }
 };
 
-const createSocketMessage = (msg) => {
-  return new Promise((resolve, reject) => {
-    try {
-      resolve(
-        Message.create(msg, {
-          returning: attributes,
-        })
-      );
-    } catch (error) {
-      console.log(error);
-      reject([
-        {
-          username: "chatterMeow",
-          message: error,
-        },
-      ]);
-    }
-  }).then((res) => res.dataValues);
+const createSocketMessage = async (msg) => {
+  try {
+    return await Message.create(msg, {
+      returning: attributes,
+    });
+  } catch (error) {
+    console.log(error);
+    return [
+      {
+        username: "chatterMeow",
+        message: error,
+        status: 400,
+      },
+    ];
+  }
 };
 
-const getSocketMessages = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      resolve(geteRecentMessages());
-    } catch (error) {
-      console.log(error);
-      reject([
-        {
-          username: "chatterMeow",
-          message: error,
-        },
-      ]);
-    }
-  });
+const getSocketMessages = async () => {
+  try {
+    return await geteRecentMessages();
+  } catch (error) {
+    console.log(error);
+    return [
+      {
+        username: "chatterMeow",
+        message: error,
+        status: 500,
+      },
+    ];
+  }
 };
 
 module.exports = {
