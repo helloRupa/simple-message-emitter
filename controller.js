@@ -4,10 +4,12 @@ const Message = db["Message"];
 const attributes = ["username", "msg", "created_at", "id"];
 
 const geteRecentMessages = async () => {
+  console.trace();
   return await Message.findAll({
     attributes,
     order: [["id", "DESC"]],
     limit: constants.MESSAGE_LIMIT,
+    subQuery: false,
     raw: true,
   });
 };
@@ -32,8 +34,10 @@ const createSocketMessage = async (msg) => {
     return [
       {
         username: "chatterMeow",
-        message: error,
-        status: 400,
+        reason: 'insertion failure',
+        message: JSON.stringify(error),
+        status: 500,
+        created_at: new Date().toLocaleDateString(),
       },
     ];
   }
@@ -47,8 +51,10 @@ const getSocketMessages = async () => {
     return [
       {
         username: "chatterMeow",
-        message: error,
+        reason: 'get failure',
+        message: JSON.stringify(error),
         status: 500,
+        created_at: new Date().toLocaleDateString(),
       },
     ];
   }
